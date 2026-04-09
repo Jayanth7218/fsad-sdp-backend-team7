@@ -1,9 +1,7 @@
 package com.fsad.springbootbackendproject.service;
 
-import com.fsad.springbootbackendproject.entity.Faculty;
-import com.fsad.springbootbackendproject.entity.Marks;
-import com.fsad.springbootbackendproject.entity.Subject;
-import com.fsad.springbootbackendproject.repository.*;
+import com.fsad.springbootbackendproject.entity.*;
+import com.fsad.springbootbackendproject.entity.*;
 import java.util.List;
 
 public interface FacultyService {

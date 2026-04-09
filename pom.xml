@@ -65,6 +65,11 @@
     <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     <version>2.2.0</version>
 </dependency>
+    <dependency>
+    	<groupId>com.kiran</groupId>
+    	<artifactId>SpringBooot-RestAPI-API-JPA-Project</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>

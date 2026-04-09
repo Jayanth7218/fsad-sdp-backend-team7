@@ -8,6 +8,7 @@ public class SpringBootBackendProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootBackendProjectApplication.class, args);
+		System.out.println("TEAM 7 Running");
 	}
 
 }
