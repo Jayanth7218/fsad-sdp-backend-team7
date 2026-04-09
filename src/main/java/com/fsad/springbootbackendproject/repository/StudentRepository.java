@@ -1,9 +1,10 @@
 package com.fsad.springbootbackendproject.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.fsad.springbootbackendproject.entity.Student;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface StudentRepository extends JpaRepository<Student, Long> {
-    Optional<Student> findByEmail(String email);
+@Repository
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+    Student findByEmailAndPassword(String email, String password);
 }

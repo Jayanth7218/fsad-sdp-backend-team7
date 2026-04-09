@@ -1,38 +1,60 @@
 package com.fsad.springbootbackendproject.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import com.fsad.springbootbackendproject.entity.Student;
 import com.fsad.springbootbackendproject.service.StudentService;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/studentapi")
+@RequestMapping("/student")
 @CrossOrigin("*")
 public class StudentController {
 
     @Autowired
-    private StudentService service;
+    private StudentService studentService;
 
-    @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return service.addStudent(student);
+    @GetMapping("/")
+    public String home()
+    {
+        return "Student Home";
     }
 
-    @GetMapping
-    public List<Student> getAllStudents() {
-        return service.getAllStudents();
-    }
+    @PostMapping("/login")
+    public ResponseEntity<?> verifyStudentLogin(@RequestBody Student std)
+    {
+        try
+        {
+            Student s = studentService.verifyStudentLogin(std.getEmail(), std.getPassword());
 
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id) {
-        service.deleteStudent(id);
+            if(s != null)
+            {
+                return ResponseEntity.status(200).body(s);
+            }
+            else
+            {
+                return ResponseEntity.status(401).body("Login Invalid");
+            }
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
     }
-
-    @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Long id) {
-        return service.getStudentById(id);
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> studentRegistration(@RequestBody Student std)
+    {
+        try
+        {
+            String op = studentService.studentRegistration(std);
+            return ResponseEntity.status(201).body(op);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
     }
 }

@@ -10,27 +10,51 @@ import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+import com.fsad.springbootbackendproject.entity.Marks;
+import com.fsad.springbootbackendproject.entity.Student;
+import com.fsad.springbootbackendproject.entity.Subject;
+import com.fsad.springbootbackendproject.repository.MarksRepository;
+import com.fsad.springbootbackendproject.repository.StudentRepository;
+import com.fsad.springbootbackendproject.repository.SubjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class StudentServiceImpl implements StudentService {
 
     @Autowired
-    private StudentRepository repo;
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private SubjectRepository subjectRepository;
+
+    @Autowired
+    private MarksRepository marksRepository;
 
     @Override
-    public Student addStudent(Student student) {
-        return repo.save(student);
+    public Student verifyStudentLogin(String email, String password) {
+        return studentRepository.findByEmailAndPassword(email, password);
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return repo.findAll();
+    public Student getStudentById(int id) {
+        return studentRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void deleteStudent(Long id) {
-        repo.deleteById(id);
+    public List<Subject> getAllSubjects() {
+        return subjectRepository.findAll();
     }
 
     @Override
-    public Student getStudentById(Long id) {
-        return repo.findById(id).orElse(null);
+    public List<Marks> getMarksByStudent(int studentId) {
+        return marksRepository.findByStudent_Id(studentId);
+    }
+
+    @Override
+    public String studentRegistration(Student student) {
+        studentRepository.save(student);
+        return "Student Registered Successfully";
     }
 }
