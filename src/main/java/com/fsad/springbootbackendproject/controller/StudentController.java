@@ -1,7 +1,8 @@
 package com.fsad.springbootbackendproject.controller;
 
-
+import com.fsad.springbootbackendproject.entity.Marks;
 import com.fsad.springbootbackendproject.entity.Student;
+import com.fsad.springbootbackendproject.entity.Subject;
 import com.fsad.springbootbackendproject.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,48 @@ public class StudentController {
         catch(Exception e)
         {
             return ResponseEntity.status(500).body("Internal Server Error");
+        }
+    }
+
+   
+    @GetMapping("/getAllSubjects")
+    public ResponseEntity<?> getAllSubjects()
+    {
+        try
+        {
+            List<Subject> subjects = studentService.getAllSubjects();
+
+            if(subjects.size() == 0)
+            {
+                return ResponseEntity.status(204).body("No Subjects Found");
+            }
+
+            return ResponseEntity.status(200).body(subjects);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(500).body("Error Fetching Subjects");
+        }
+    }
+
+
+    @GetMapping("/getMarks/{studentId}")
+    public ResponseEntity<?> getMarksByStudent(@PathVariable int studentId)
+    {
+        try
+        {
+            List<Marks> marks = studentService.getMarksByStudent(studentId);
+
+            if(marks.size() == 0)
+            {
+                return ResponseEntity.status(204).body("No Marks Found");
+            }
+
+            return ResponseEntity.status(200).body(marks);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(500).body("Error Fetching Marks");
         }
     }
     

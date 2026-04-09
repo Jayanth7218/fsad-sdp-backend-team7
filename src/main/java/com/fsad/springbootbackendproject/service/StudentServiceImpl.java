@@ -3,21 +3,13 @@ package com.fsad.springbootbackendproject.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fsad.springbootbackendproject.entity.Student;
-import com.fsad.springbootbackendproject.repository.StudentRepository;
-
-import java.util.List;
-
-@Service
-public class StudentServiceImpl implements StudentService {
 import com.fsad.springbootbackendproject.entity.Marks;
 import com.fsad.springbootbackendproject.entity.Student;
 import com.fsad.springbootbackendproject.entity.Subject;
 import com.fsad.springbootbackendproject.repository.MarksRepository;
 import com.fsad.springbootbackendproject.repository.StudentRepository;
 import com.fsad.springbootbackendproject.repository.SubjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
