@@ -1,8 +1,8 @@
-package com.fsad.springbootbackendproject.service;
+package com.klef.fsad.springbootbackendproject.service;
 
-import com.fsad.springbootbackendproject.entity.*;
-import com.fsad.springbootbackendproject.entity.*;
 import java.util.List;
+
+import com.klef.fsad.springbootbackendproject.entity.*;
 
 public interface FacultyService {
 	

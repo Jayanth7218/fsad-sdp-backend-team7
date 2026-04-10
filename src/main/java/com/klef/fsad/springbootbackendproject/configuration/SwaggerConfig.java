@@ -1,4 +1,4 @@
-package com.fsad.springbootbackendproject.configuration;
+package com.klef.fsad.springbootbackendproject.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

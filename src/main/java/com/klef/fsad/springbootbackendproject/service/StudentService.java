@@ -1,9 +1,10 @@
-package com.fsad.springbootbackendproject.service;
+package com.klef.fsad.springbootbackendproject.service;
 
-import com.fsad.springbootbackendproject.entity.Marks;
-import com.fsad.springbootbackendproject.entity.Student;
-import com.fsad.springbootbackendproject.entity.Subject;
 import java.util.List;
+
+import com.klef.fsad.springbootbackendproject.entity.Marks;
+import com.klef.fsad.springbootbackendproject.entity.Student;
+import com.klef.fsad.springbootbackendproject.entity.Subject;
 
 public interface StudentService {
   

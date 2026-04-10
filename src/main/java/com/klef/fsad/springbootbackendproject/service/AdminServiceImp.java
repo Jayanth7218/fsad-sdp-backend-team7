@@ -1,13 +1,14 @@
-package com.fsad.springbootbackendproject.service;
+package com.klef.fsad.springbootbackendproject.service;
 
-import com.fsad.springbootbackendproject.entity.Admin;
-import com.fsad.springbootbackendproject.entity.Faculty;
-import com.fsad.springbootbackendproject.entity.Marks;
-import com.fsad.springbootbackendproject.entity.Student;
-import com.fsad.springbootbackendproject.repository.AdminRepository;
-import com.fsad.springbootbackendproject.repository.FacultyRepository;
-import com.fsad.springbootbackendproject.repository.MarksRepository;
-import com.fsad.springbootbackendproject.repository.StudentRepository;
+import com.klef.fsad.springbootbackendproject.entity.Admin;
+import com.klef.fsad.springbootbackendproject.entity.Faculty;
+import com.klef.fsad.springbootbackendproject.entity.Marks;
+import com.klef.fsad.springbootbackendproject.entity.Student;
+import com.klef.fsad.springbootbackendproject.repository.AdminRepository;
+import com.klef.fsad.springbootbackendproject.repository.FacultyRepository;
+import com.klef.fsad.springbootbackendproject.repository.MarksRepository;
+import com.klef.fsad.springbootbackendproject.repository.StudentRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

@@ -1,8 +1,9 @@
-package com.fsad.springbootbackendproject.repository;
+package com.klef.fsad.springbootbackendproject.repository;
 
-import com.fsad.springbootbackendproject.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.klef.fsad.springbootbackendproject.entity.Student;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer> {

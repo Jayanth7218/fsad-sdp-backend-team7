@@ -1,9 +1,10 @@
-package com.fsad.springbootbackendproject.controller;
+package com.klef.fsad.springbootbackendproject.controller;
 
-import com.fsad.springbootbackendproject.entity.Marks;
-import com.fsad.springbootbackendproject.entity.Student;
-import com.fsad.springbootbackendproject.entity.Subject;
-import com.fsad.springbootbackendproject.service.StudentService;
+import com.klef.fsad.springbootbackendproject.entity.Marks;
+import com.klef.fsad.springbootbackendproject.entity.Student;
+import com.klef.fsad.springbootbackendproject.entity.Subject;
+import com.klef.fsad.springbootbackendproject.service.StudentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

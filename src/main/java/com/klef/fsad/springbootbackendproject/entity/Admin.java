@@ -1,4 +1,4 @@
-package com.fsad.springbootbackendproject.entity;
+package com.klef.fsad.springbootbackendproject.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

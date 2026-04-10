@@ -1,4 +1,4 @@
-package com.fsad.springbootbackendproject.entity;
+package com.klef.fsad.springbootbackendproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
