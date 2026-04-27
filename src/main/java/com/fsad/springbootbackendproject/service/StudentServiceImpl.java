@@ -49,4 +49,11 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.save(student);
         return "Student Registered Successfully";
     }
+    
+    @Override
+    public Student getStudentByEmail(String email) 
+    {
+        return studentRepository.findByEmail(email);
+    }
+    
 }

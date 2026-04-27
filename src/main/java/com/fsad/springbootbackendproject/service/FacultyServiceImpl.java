@@ -117,4 +117,11 @@ public class FacultyServiceImpl implements FacultyService {
         
     	return "Marks Deleted Successfully";
     }
+    
+    @Override
+    public Faculty getFacultyByEmail(String email) 
+    {
+        return facultyRepository.findByEmail(email);
+    }
+    
 }

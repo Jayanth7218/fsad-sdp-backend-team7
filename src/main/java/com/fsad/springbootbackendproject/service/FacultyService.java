@@ -9,6 +9,8 @@ public interface FacultyService {
 	
     public Faculty verifyFacultyLogin(String email, String password);
     
+    Faculty getFacultyByEmail(String email);
+    
     public String addSubject(Subject subject);
     
     

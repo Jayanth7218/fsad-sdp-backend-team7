@@ -7,17 +7,16 @@ import java.util.List;
 
 public interface StudentService {
   
-  // login
+  
     Student verifyStudentLogin(String email, String password);
     
     Student getStudentById(int id);
-
-    // Subject operations
+    
+    Student getStudentByEmail(String email);
+    
     List<Subject> getAllSubjects();
 
-    // Marks operations
     List<Marks> getMarksByStudent(int studentId);
     
-    // Student acc creation
     String studentRegistration(Student student);
 }
