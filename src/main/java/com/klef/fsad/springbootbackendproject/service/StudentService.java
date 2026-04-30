@@ -15,9 +15,12 @@ public interface StudentService {
     
     Student getStudentByEmail(String email);
     
+    List<Student> getAllStudents();
+    
     List<Subject> getAllSubjects();
 
     List<Marks> getMarksByStudent(int studentId);
     
     String studentRegistration(Student student);
+    
 }

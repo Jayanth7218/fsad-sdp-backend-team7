@@ -2,8 +2,10 @@ package com.klef.fsad.springbootbackendproject.controller;
 
 import com.klef.fsad.springbootbackendproject.entity.Faculty;
 import com.klef.fsad.springbootbackendproject.entity.Marks;
+import com.klef.fsad.springbootbackendproject.entity.Student;
 import com.klef.fsad.springbootbackendproject.entity.Subject;
 import com.klef.fsad.springbootbackendproject.service.FacultyService;
+import com.klef.fsad.springbootbackendproject.service.StudentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,60 @@ public class FacultyController {
             return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
+    @PostMapping("/addFaculty")
+    public ResponseEntity<?> addFaculty(@RequestBody Faculty faculty) {
+        try {
+            String op = facultyService.addFaculty(faculty);
+            return ResponseEntity.ok(op);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error adding faculty");
+        }
+    }
+    
+    @DeleteMapping("/deleteFaculty/{id}")
+    public ResponseEntity<?> deleteFaculty(@PathVariable int id) {
+        try {
+            String msg = facultyService.deleteFaculty(id);
+            return ResponseEntity.ok(msg);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting faculty");
+        }
+    }
+    
+    @GetMapping("/getAllFaculty")
+    public ResponseEntity<?> getAllFaculty() {
+        try {
+            List<Faculty> list = facultyService.getAllFaculty();
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching faculty");
+        }
+    }
+    @Autowired
+    private StudentService studentService;
+
+    @GetMapping("/getAllStudents")
+    public ResponseEntity<?> getAllStudents() {
+        try {
+            List<Student> students = studentService.getAllStudents();
+            return ResponseEntity.ok(students);
+        } catch (Exception e) {
+            e.printStackTrace(); // 🔥 VERY IMPORTANT
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+    
+    @DeleteMapping("/deleteStudent/{id}")
+    public ResponseEntity<?> deleteStudent(@PathVariable int id) {
+        try {
+            String msg = facultyService.deleteStudent(id);
+            return ResponseEntity.ok(msg);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error deleting student");
+        }
+    }
+    
+    
 
     @PostMapping("/addSubject")
     public ResponseEntity<?> addSubject(@RequestBody Subject subject) {
@@ -58,6 +114,15 @@ public class FacultyController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error Fetching Subjects");
+        }
+    }
+    @GetMapping("/getAllSubjects")
+    public ResponseEntity<?> getAllSubjects() {
+        try {
+            List<Subject> subjects = facultyService.getAllSubjects();
+            return ResponseEntity.ok(subjects);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching subjects");
         }
     }
 

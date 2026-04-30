@@ -27,6 +27,12 @@ public interface FacultyService {
     
     List<Marks> getAllMarks();
     
+    String addFaculty(Faculty faculty);
+    List<Faculty> getAllFaculty();
+    String deleteFaculty(int id);
+    
+    String deleteStudent(int id);
+    List<Subject> getAllSubjects();
     String deleteMarks(int id);
     
 }

@@ -4,15 +4,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.klef.fsad.springbootbackendproject.service.CustomUserDetailsService;
-import com.klef.fsad.springbootbackendproject.service.StudentService;
 import com.klef.fsad.springbootbackendproject.dto.AuthRequestDTO;
 import com.klef.fsad.springbootbackendproject.security.JwtUtil;
-import com.klef.fsad.springbootbackendproject.service.FacultyService;
+import com.klef.fsad.springbootbackendproject.service.CustomUserDetailsService;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,70 +19,49 @@ import com.klef.fsad.springbootbackendproject.service.FacultyService;
 public class AuthController 
 {
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
     private CustomUserDetailsService service;
 
     @Autowired
-    private StudentService studentService;
-
-    @Autowired
-    private FacultyService facultyService;
-
-    @Autowired
     private JwtUtil jwtUtil;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) 
     {
         try 
         {
-            UserDetails userDetails = service.loadUserByUsername(request.getEmail());
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getUsername(),   // ✅ ONLY username
+                    request.getPassword()
+                )
+            );
+
+            UserDetails userDetails = service.loadUserByUsername(request.getUsername());
 
             String role = userDetails.getAuthorities()
                     .iterator().next().getAuthority();
 
-            if (!role.equalsIgnoreCase(request.getRole()))
-            {
-                return ResponseEntity.status(403).body("Invalid Role");
-            }
-
-            boolean isValid = passwordEncoder.matches(
-                    request.getPassword(),
-                    userDetails.getPassword()
-            );
-
-            if (!isValid)
-            {
-                return ResponseEntity.status(401).body("Login Invalid");
-            }
-
             String token = jwtUtil.generateToken(userDetails);
-
-            Object userObj;
-
-            if (role.equalsIgnoreCase("ROLE_STUDENT"))
-            {
-                userObj = studentService.getStudentByEmail(request.getEmail());
-            }
-            else
-            {
-                userObj = facultyService.getFacultyByEmail(request.getEmail());
-            }
+           
+            int userId = service.getUserIdByUsername(request.getUsername());
 
             return ResponseEntity.ok(
                 Map.of(
                     "token", token,
                     "role", role,
-                    "user", userObj
+                    "username", request.getUsername(),
+                    "userId", userId
                 )
             );
+
         } 
         catch (Exception e) 
         {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
+            e.printStackTrace(); // 🔥 VERY IMPORTANT (see console)
+            return ResponseEntity.status(401).body("Invalid Email or Password");
         }
     }
 }

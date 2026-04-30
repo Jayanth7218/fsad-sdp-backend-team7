@@ -1,5 +1,6 @@
 package com.klef.fsad.springbootbackendproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // 🔥 IMPORTANT
 import jakarta.persistence.*;
 
 @Entity
@@ -9,43 +10,49 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(nullable = false)
     private String subjectName;
+
     @Column(nullable = false)
     private String subjectCode;
+
     @ManyToOne
     @JoinColumn(name = "faculty_id")
+    @JsonIgnore   // 🔥 PREVENTS INFINITE LOOP
     private Faculty faculty;
 
-	public int getId() {
-		return id;
-	}
+    // ================= GETTERS & SETTERS =================
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getSubjectName() {
-		return subjectName;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
+    public String getSubjectName() {
+        return subjectName;
+    }
 
-	public String getSubjectCode() {
-		return subjectCode;
-	}
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
 
-	public void setSubjectCode(String subjectCode) {
-		this.subjectCode = subjectCode;
-	}
+    public String getSubjectCode() {
+        return subjectCode;
+    }
 
-	public Faculty getFaculty() {
-		return faculty;
-	}
+    public void setSubjectCode(String subjectCode) {
+        this.subjectCode = subjectCode;
+    }
 
-	public void setFaculty(Faculty faculty) {
-		this.faculty = faculty;
-	}
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
 }

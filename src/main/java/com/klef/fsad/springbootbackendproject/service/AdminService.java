@@ -26,5 +26,8 @@ public interface AdminService {
     public boolean deleteStudentById(int id);
     
     List<Marks> getMarksByStudentId(int studentId);
+    public void saveAdmin(Admin admin);
+    
+    
     
 }

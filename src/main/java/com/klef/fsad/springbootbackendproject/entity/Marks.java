@@ -1,5 +1,6 @@
 package com.klef.fsad.springbootbackendproject.entity;
 
+
 import jakarta.persistence.*;
 
 @Entity
@@ -23,6 +24,8 @@ public class Marks {
 
     @Column(nullable = false)
     private int maxMarks;
+    @Column
+    private String feedback;
     
     
 
@@ -64,6 +67,14 @@ public class Marks {
 
     public void setMaxMarks(int maxMarks) {
         this.maxMarks = maxMarks;
+    }
+    
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
     }
 
 	

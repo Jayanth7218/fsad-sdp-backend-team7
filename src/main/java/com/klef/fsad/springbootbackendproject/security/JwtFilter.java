@@ -1,18 +1,15 @@
 package com.klef.fsad.springbootbackendproject.security;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.klef.fsad.springbootbackendproject.service.CustomUserDetailsService;
-
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,114 +17,61 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter 
-{
+public class JwtFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
-    private CustomUserDetailsService service;
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain chain) throws ServletException, IOException 
-    {
-        String path = request.getServletPath();  
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        // Public endpoints (no authentication required)
-        List<String> publicPaths = List.of(
-        	    "/auth",            // covers /auth/login
-        	    "/student/register",
-        	    "/faculty/register",
-        	    "/swagger-ui",
-        	    "/v3/api-docs",
-        	    "/demoapi"
-        	);
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
 
-        boolean isPublic = publicPaths.stream()
-                .anyMatch(path::startsWith);
-
-        if (isPublic) 
-        {
-            chain.doFilter(request, response);
+        // ✅ If no token → just continue (DO NOT BLOCK)
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String header = request.getHeader("Authorization");
-        System.out.println("Token Header = " + header);
-
-        if (header == null || !header.startsWith("Bearer ")) 
-        {
-            sendErrorResponse(response, 401,
-                    "Authorization header is missing or must start with 'Bearer '");
+        try {
+            token = authHeader.substring(7); // remove "Bearer "
+            username = jwtUtil.extractUsername(token);
+        } catch (Exception e) {
+            // invalid token → continue without authentication
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String token = header.substring(7).trim();
+        // ✅ If username found and not already authenticated
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        try 
-        {
-            String username = jwtUtil.extractUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (username == null) 
-            {
-                sendErrorResponse(response, 401,
-                        "Invalid token: Username could not be extracted");
-                return;
+            // ✅ Validate token
+            if (jwtUtil.validateToken(token, userDetails)) {
+
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-
-            if (SecurityContextHolder.getContext().getAuthentication() == null) 
-            {
-                UserDetails userDetails = service.loadUserByUsername(username);
-
-                if (userDetails != null && jwtUtil.validateToken(token, userDetails)) 
-                {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
-
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                } 
-                else 
-                {
-                    sendErrorResponse(response, 401,
-                            "Invalid or expired token");
-                    return;
-                }
-            }
-        } 
-        catch (Exception e) 
-        {
-            sendErrorResponse(response, 401,
-                    "Invalid token: " + e.getMessage());
-            return;
         }
 
-        chain.doFilter(request, response);
-    }
-
-    private void sendErrorResponse(HttpServletResponse response,
-                                   int status,
-                                   String message) throws IOException 
-    {
-        response.setStatus(status);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        String error = (status == 401) ? "Unauthorized" : "Forbidden";
-
-        String jsonResponse =
-                "{\"error\":\"" + error + "\",\"message\":\"" + message + "\"}";
-
-        response.getWriter().write(jsonResponse);
-        response.getWriter().flush();
+        // ✅ Continue request
+        filterChain.doFilter(request, response);
     }
 }

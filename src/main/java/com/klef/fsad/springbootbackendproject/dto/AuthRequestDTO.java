@@ -2,16 +2,15 @@ package com.klef.fsad.springbootbackendproject.dto;
 
 public class AuthRequestDTO 
 {
-    private String email;
+    private String username;   // ✅ only this
     private String password;
-    private String role;
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -20,13 +19,5 @@ public class AuthRequestDTO
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 }

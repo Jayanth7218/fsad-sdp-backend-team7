@@ -10,6 +10,7 @@ import com.klef.fsad.springbootbackendproject.repository.MarksRepository;
 import com.klef.fsad.springbootbackendproject.repository.StudentRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -30,13 +31,27 @@ public class AdminServiceImp implements AdminService {
 
     @Override
     public Admin verifyAdminLogin(String username, String password) {
-        return adminRepository.findByUsernameAndPassword(username, password);
+        return adminRepository.findByUsername(username);
     }
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
-    public String addFaculty(Faculty faculty) {
+    public String addFaculty(Faculty faculty)
+    {
+        System.out.println("RAW PASSWORD: " + faculty.getPassword()); // debug
+
+        if (faculty.getPassword() == null || faculty.getPassword().isEmpty()) {
+            throw new RuntimeException("Password is missing!");
+        }
+
+        // 🔥 ENCODE PASSWORD
+        faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
+
         facultyRepository.save(faculty);
-        return "Faculty added successfully";
+
+        return "Faculty Added Successfully";
     }
 
     @Override
@@ -87,6 +102,17 @@ public class AdminServiceImp implements AdminService {
         return marksRepository.findByStudent_Id(studentId);
         
     }
+    
+    @Autowired
+    private AdminRepository adminRepo;
+
+    @Override
+    public void saveAdmin(Admin admin)
+    {
+        adminRepo.save(admin);
+    }
+    
+    
     
     
 }

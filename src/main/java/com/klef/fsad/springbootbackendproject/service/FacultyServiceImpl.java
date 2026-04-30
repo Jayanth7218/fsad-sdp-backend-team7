@@ -2,6 +2,7 @@ package com.klef.fsad.springbootbackendproject.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.klef.fsad.springbootbackendproject.entity.*;
@@ -28,6 +29,33 @@ public class FacultyServiceImpl implements FacultyService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public String addFaculty(Faculty faculty) {
+        try {
+            // 🔐 Encrypt password
+            faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
+
+            facultyRepository.save(faculty);
+
+            return "Faculty Added Successfully";
+        } catch (Exception e) {
+            return "Error Adding Faculty";
+        }
+    }
+    @Override
+    public String deleteFaculty(int id) {
+        facultyRepository.deleteById(id);
+        return "Faculty Deleted Successfully";
+    }
+    @Override
+    public List<Faculty> getAllFaculty() {
+        return facultyRepository.findAll();
+    }
+    
+    
     @Override
     public Faculty verifyFacultyLogin(String email, String password) {
         return facultyRepository.findByEmailAndPassword(email, password);
@@ -52,20 +80,40 @@ public class FacultyServiceImpl implements FacultyService {
 
     @Override
     public String addMarks(Marks marks) {
-        int studentId = marks.getStudent().getId();
-        int subjectId = marks.getSubject().getId();
+        try {
+            
+            if (marks == null || marks.getStudent() == null || marks.getSubject() == null) {
+                throw new RuntimeException("Invalid payload: student/subject missing");
+            }
 
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+            int studentId = marks.getStudent().getId();
+            int subjectId = marks.getSubject().getId();
 
-        Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new RuntimeException("Subject not found"));
+            if (studentId <= 0 || subjectId <= 0) {
+                throw new RuntimeException("Invalid IDs: studentId=" + studentId + ", subjectId=" + subjectId);
+            }
 
-        marks.setStudent(student);
-        marks.setSubject(subject);
+            Student student = studentRepository.findById(studentId)
+                    .orElseThrow(() -> new RuntimeException("Student not found: " + studentId));
 
-        marksRepository.save(marks);
-        return "Marks Added Successfully";
+            Subject subject = subjectRepository.findById(subjectId)
+                    .orElseThrow(() -> new RuntimeException("Subject not found: " + subjectId));
+
+            marks.setStudent(student);
+            marks.setSubject(subject);
+
+            if (marks.getMaxMarks() <= 0) {
+                marks.setMaxMarks(100);
+            }
+
+            marksRepository.save(marks);
+
+            return "Marks Added Successfully";
+        } catch (Exception e) {
+       
+            e.printStackTrace();
+            return "Error Adding Marks: " + e.getMessage();
+        }
     }
 
     @Override
@@ -121,5 +169,15 @@ public class FacultyServiceImpl implements FacultyService {
         return facultyRepository.findByEmail(email);
     }
     
+    @Override
+    public String deleteStudent(int id) {
+        studentRepository.deleteById(id);
+        return "Student Deleted Successfully";
+    }
+    
+    @Override
+    public List<Subject> getAllSubjects() {
+        return subjectRepository.findAll();
+    }
     
 }

@@ -6,6 +6,7 @@ import com.klef.fsad.springbootbackendproject.service.AdminService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -32,6 +33,24 @@ public class AdminController {
         return adminService.verifyAdminLogin(username, password);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<?> createAdmin(@RequestBody Admin admin)
+    {
+        try
+        {
+            // 🔥 Encode password properly
+            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+            // save directly
+            adminService.saveAdmin(admin);  // we will add this method
+
+            return ResponseEntity.ok("Admin created successfully");
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(500).body("Error creating admin");
+        }
+    }
     // Faculty
     @PostMapping("/addFaculty")
     public ResponseEntity<String> addFaculty(@RequestBody Faculty faculty) 
@@ -44,8 +63,9 @@ public class AdminController {
     } 
       catch (Exception e) 
       {
-      return ResponseEntity.status(500).body("Internal Server Error");
-    }
+          e.printStackTrace(); // 🔥 SHOW REAL ERROR
+          return ResponseEntity.status(500).body(e.getMessage());
+      }
          
     }
 
@@ -61,6 +81,14 @@ public class AdminController {
         return ResponseEntity.status(500).body("Error Fetching Faculty");
       
       }
+    }
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @GetMapping("/test/hash")
+    public String hash() {
+        return passwordEncoder.encode("admin");
     }
 
     @DeleteMapping("/deleteFaculty/{id}")

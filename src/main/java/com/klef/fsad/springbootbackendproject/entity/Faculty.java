@@ -1,6 +1,6 @@
 package com.klef.fsad.springbootbackendproject.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 
@@ -16,6 +16,7 @@ public class Faculty {
     @Column(nullable = false,unique = true)
     private String email;
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     @Column(nullable = false,unique = true)
     private String contact;
@@ -51,6 +52,7 @@ public class Faculty {
 	public void setContact(String contact) {
 	    this.contact = contact;  
 	}
+	
 	
     
     
