@@ -19,6 +19,8 @@ public class Student {
     private String password;
     @Column(nullable = false,unique = true)
     private String contact;
+    private String resetToken;
+    private Long tokenExpiry;
 
   public String getName() {
     return name;
@@ -48,6 +50,18 @@ public class Student {
   }
   public int getId() {
     return id;
+  }
+  public String getResetToken() {
+	return resetToken;
+  }
+  public void setResetToken(String resetToken) {
+	this.resetToken = resetToken;
+  }
+  public Long getTokenExpiry() {
+	return tokenExpiry;
+  }
+  public void setTokenExpiry(Long tokenExpiry) {
+	this.tokenExpiry = tokenExpiry;
   }
   
     

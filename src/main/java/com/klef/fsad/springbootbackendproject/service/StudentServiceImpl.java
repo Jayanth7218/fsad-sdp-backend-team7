@@ -25,7 +25,12 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private MarksRepository marksRepository;
 
-    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public Student verifyStudentLogin(String email, String password) {
         return studentRepository.findByEmailAndPassword(email, password);
@@ -46,14 +51,23 @@ public class StudentServiceImpl implements StudentService {
         return marksRepository.findByStudent_Id(studentId);
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public String studentRegistration(Student student)
     {
-        student.setPassword(passwordEncoder.encode(student.getPassword())); // 🔐 FIX
-        studentRepository.save(student);
+        String rawPassword = student.getPassword();
+
+        student.setPassword(passwordEncoder.encode(rawPassword));
+
+        Student savedStudent = studentRepository.save(student);
+
+        emailService.sendCredentials(
+                savedStudent.getEmail(),
+                savedStudent.getName(),
+                savedStudent.getEmail(),
+                rawPassword,
+                "STUDENT"
+        );
+
         return "Student Registered Successfully";
     }
     
@@ -67,5 +81,4 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
-    
 }

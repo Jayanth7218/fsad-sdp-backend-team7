@@ -29,27 +29,37 @@ public class AdminServiceImp implements AdminService {
     @Autowired
     private MarksRepository marksRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public Admin verifyAdminLogin(String username, String password) {
         return adminRepository.findByUsername(username);
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
     public String addFaculty(Faculty faculty)
     {
-        System.out.println("RAW PASSWORD: " + faculty.getPassword()); // debug
+        String rawPassword = faculty.getPassword();
 
-        if (faculty.getPassword() == null || faculty.getPassword().isEmpty()) {
+        if (rawPassword == null || rawPassword.isEmpty()) {
             throw new RuntimeException("Password is missing!");
         }
 
-        // 🔥 ENCODE PASSWORD
-        faculty.setPassword(passwordEncoder.encode(faculty.getPassword()));
+        faculty.setPassword(passwordEncoder.encode(rawPassword));
 
-        facultyRepository.save(faculty);
+        Faculty savedFaculty = facultyRepository.save(faculty);
+
+        emailService.sendCredentials(
+                savedFaculty.getEmail(),
+                savedFaculty.getName(),
+                savedFaculty.getEmail(),
+                rawPassword,
+                "FACULTY"
+        );
 
         return "Faculty Added Successfully";
     }
@@ -61,13 +71,10 @@ public class AdminServiceImp implements AdminService {
 
     @Override
     public boolean deleteFacultyById(int id) {
-      
         if(facultyRepository.existsById(id)) 
         {
-          
-          facultyRepository.deleteById(id);
-          
-             return true;
+            facultyRepository.deleteById(id);
+            return true;
         }
         return false;
     }
@@ -75,32 +82,24 @@ public class AdminServiceImp implements AdminService {
     @Override
     public List<Student> getAllStudents() 
     {
-      
         return studentRepository.findAll();
     }
 
     @Override
     public boolean deleteStudentById(int id) 
     {
-      
         if(studentRepository.existsById(id))
-          {
-          
-          studentRepository.deleteById(id);
-          
-          return true;
-          
-          }
-            
+        {
+            studentRepository.deleteById(id);
+            return true;
+        }
         return false;
     }
     
     @Override
     public List<Marks> getMarksByStudentId(int studentId)
     {
-      
         return marksRepository.findByStudent_Id(studentId);
-        
     }
     
     @Autowired
@@ -111,8 +110,4 @@ public class AdminServiceImp implements AdminService {
     {
         adminRepo.save(admin);
     }
-    
-    
-    
-    
 }
