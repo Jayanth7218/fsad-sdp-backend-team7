@@ -53,13 +53,19 @@ public class AdminServiceImp implements AdminService {
 
         Faculty savedFaculty = facultyRepository.save(faculty);
 
-        emailService.sendCredentials(
-                savedFaculty.getEmail(),
-                savedFaculty.getName(),
-                savedFaculty.getEmail(),
-                rawPassword,
-                "FACULTY"
-        );
+        new Thread(() -> {
+            try {
+                emailService.sendCredentials(
+                        savedFaculty.getEmail(),
+                        savedFaculty.getName(),
+                        savedFaculty.getEmail(),
+                        rawPassword,
+                        "FACULTY"
+                );
+            } catch (Exception e) {
+                System.out.println("Email failed: " + e.getMessage());
+            }
+        }).start();
 
         return "Faculty Added Successfully";
     }

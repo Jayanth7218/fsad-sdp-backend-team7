@@ -60,13 +60,19 @@ public class StudentServiceImpl implements StudentService {
 
         Student savedStudent = studentRepository.save(student);
 
-        emailService.sendCredentials(
-                savedStudent.getEmail(),
-                savedStudent.getName(),
-                savedStudent.getEmail(),
-                rawPassword,
-                "STUDENT"
-        );
+        new Thread(() -> {
+            try {
+                emailService.sendCredentials(
+                        savedStudent.getEmail(),
+                        savedStudent.getName(),
+                        savedStudent.getEmail(),
+                        rawPassword,
+                        "STUDENT"
+                );
+            } catch (Exception e) {
+                System.out.println("Email failed: " + e.getMessage());
+            }
+        }).start();
 
         return "Student Registered Successfully";
     }
