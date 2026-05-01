@@ -7,10 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
@@ -28,8 +26,8 @@ import com.klef.fsad.springbootbackendproject.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig 
-{
+public class SecurityConfig {
+
     @Autowired
     private JwtFilter jwtFilter;
 
@@ -37,18 +35,15 @@ public class SecurityConfig
     private CustomUserDetailsService userService;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception 
-    {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
 
-            
-
             .authorizeHttpRequests(auth -> auth
-
-                // PUBLIC
+                // ✅ PUBLIC ROUTES
                 .requestMatchers(
+                    "/",
                     "/auth/**",
                     "/student/register",
                     "/swagger-ui/**",
@@ -56,11 +51,12 @@ public class SecurityConfig
                     "/test/**"
                 ).permitAll()
 
-                .requestMatchers("/admin/create").permitAll()
-                // PROTECTED
-                .requestMatchers("/student/**").hasAuthority("ROLE_STUDENT")
+                // ✅ ROLE BASED
+                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/faculty/**").hasAuthority("ROLE_FACULTY")
+                .requestMatchers("/student/**").hasAuthority("ROLE_STUDENT")
 
+                // ✅ EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
@@ -73,26 +69,26 @@ public class SecurityConfig
         return http.build();
     }
 
-    
-
     @Bean
-    public PasswordEncoder passwordEncoder() 
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
-    {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() 
-    {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // 🔥 IMPORTANT: allow your deployed frontend later
+        config.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://your-frontend.netlify.app"   // 👈 change later
+        ));
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
