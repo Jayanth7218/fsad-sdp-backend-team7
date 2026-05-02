@@ -37,11 +37,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> {})
+            // 🔥 FIXED LINE
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                // ✅ PUBLIC ROUTES
                 .requestMatchers(
                     "/",
                     "/auth/**",
@@ -51,12 +52,10 @@ public class SecurityConfig {
                     "/test/**"
                 ).permitAll()
 
-                // ✅ ROLE BASED
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/faculty/**").hasAuthority("ROLE_FACULTY")
                 .requestMatchers("/student/**").hasAuthority("ROLE_STUDENT")
 
-                // ✅ EVERYTHING ELSE
                 .anyRequest().authenticated()
             )
 
@@ -83,11 +82,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // 🔥 IMPORTANT: allow your deployed frontend later
-        config.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "https://your-frontend.netlify.app"   // 👈 change later
-        ));
+        // ✅ For testing (safe for now)
+        config.setAllowedOriginPatterns(List.of("*"));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
