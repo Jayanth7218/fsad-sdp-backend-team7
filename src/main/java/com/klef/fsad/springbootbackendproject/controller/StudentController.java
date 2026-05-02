@@ -24,27 +24,7 @@ public class StudentController {
         return "Student Home";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> verifyStudentLogin(@RequestBody Student std)
-    {
-        try
-        {
-            Student s = studentService.verifyStudentLogin(std.getEmail(), std.getPassword());
-
-            if(s != null)
-            {
-                return ResponseEntity.status(200).body(s);
-            }
-            else
-            {
-                return ResponseEntity.status(401).body("Login Invalid");
-            }
-        }
-        catch(Exception e)
-        {
-            return ResponseEntity.status(500).body("Internal Server Error");
-        }
-    }
+   
 
    
     @GetMapping("/getAllSubjects")

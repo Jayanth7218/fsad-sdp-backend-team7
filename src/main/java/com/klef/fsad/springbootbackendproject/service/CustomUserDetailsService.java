@@ -14,8 +14,8 @@ import com.klef.fsad.springbootbackendproject.repository.FacultyRepository;
 import com.klef.fsad.springbootbackendproject.repository.StudentRepository;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService 
-{
+public class CustomUserDetailsService implements UserDetailsService {
+
     @Autowired
     private AdminRepository adminRepo;
 
@@ -26,17 +26,15 @@ public class CustomUserDetailsService implements UserDetailsService
     private FacultyRepository facultyRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException 
-    {
-        // 🔥 1. ADMIN (FIRST)
-    	Admin admin = adminRepo.findByUsername(username);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    	// 🔥 DEBUG (paste here)
-    	System.out.println("LOGIN USERNAME: [" + username + "]");
-    	System.out.println("ADMIN FOUND: " + admin);
-    	
-        if (admin != null) 
-        {
+        System.out.println("LOGIN USERNAME: " + username);
+
+        // ✅ ADMIN
+        Admin admin = adminRepo.findByUsername(username);
+        if (admin != null) {
+            System.out.println("ADMIN FOUND");
+
             return new User(
                 admin.getUsername(),
                 admin.getPassword(),
@@ -44,11 +42,10 @@ public class CustomUserDetailsService implements UserDetailsService
             );
         }
 
-        
-        // 🔥 2. STUDENT
         Student student = studentRepo.findByEmail(username);
-        if (student != null) 
-        {
+        if (student != null) {
+            System.out.println("STUDENT FOUND");
+
             return new User(
                 student.getEmail(),
                 student.getPassword(),
@@ -56,10 +53,10 @@ public class CustomUserDetailsService implements UserDetailsService
             );
         }
 
-        // 🔥 3. FACULTY
         Faculty faculty = facultyRepo.findByEmail(username);
-        if (faculty != null) 
-        {
+        if (faculty != null) {
+            System.out.println("FACULTY FOUND");
+
             return new User(
                 faculty.getEmail(),
                 faculty.getPassword(),
@@ -68,16 +65,5 @@ public class CustomUserDetailsService implements UserDetailsService
         }
 
         throw new UsernameNotFoundException("User not found");
-    }
-    
-    public int getUserIdByUsername(String username) {
-        if (username.contains("@")) {
-            Student s = studentRepo.findByEmail(username);
-            if (s != null) return s.getId();
-
-            Faculty f = facultyRepo.findByEmail(username);
-            if (f != null) return f.getId();
-        }
-        return -1;
     }
 }

@@ -15,9 +15,9 @@ import com.klef.fsad.springbootbackendproject.service.CustomUserDetailsService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
-public class AuthController 
-{
+@CrossOrigin("*")
+public class AuthController {
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -28,13 +28,12 @@ public class AuthController
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) 
-    {
-        try 
-        {
+    public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) {
+        try {
+
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    request.getUsername(),   // ✅ ONLY username
+                    request.getUsername(),
                     request.getPassword()
                 )
             );
@@ -45,23 +44,17 @@ public class AuthController
                     .iterator().next().getAuthority();
 
             String token = jwtUtil.generateToken(userDetails);
-           
-            int userId = service.getUserIdByUsername(request.getUsername());
 
             return ResponseEntity.ok(
                 Map.of(
                     "token", token,
                     "role", role,
-                    "username", request.getUsername(),
-                    "userId", userId
+                    "username", request.getUsername()
                 )
             );
 
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace(); // 🔥 VERY IMPORTANT (see console)
-            return ResponseEntity.status(401).body("Invalid Email or Password");
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Invalid credentials");
         }
     }
 }

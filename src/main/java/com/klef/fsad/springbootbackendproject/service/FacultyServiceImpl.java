@@ -55,10 +55,9 @@ public class FacultyServiceImpl implements FacultyService {
         return facultyRepository.findAll();
     }
     
-    
     @Override
     public Faculty verifyFacultyLogin(String email, String password) {
-        return facultyRepository.findByEmailAndPassword(email, password);
+        return facultyRepository.findByEmail(email);
     }
 
     @Override

@@ -26,12 +26,6 @@ public class AdminController {
       return "FSAD SDP Project no 29";
     }
 
-  
-    @PostMapping("/login")
-    public Admin verifyAdminLogin(@RequestParam String username,@RequestParam String password) 
-    {
-        return adminService.verifyAdminLogin(username, password);
-    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createAdmin(@RequestBody Admin admin)

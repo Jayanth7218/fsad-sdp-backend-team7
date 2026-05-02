@@ -25,21 +25,6 @@ public class FacultyController {
         return "Faculty Home";
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> verifyFacultyLogin(@RequestBody Faculty faculty) {
-        try {
-            Faculty f = facultyService.verifyFacultyLogin(faculty.getEmail(), faculty.getPassword());
-
-            if (f != null) {
-                return ResponseEntity.status(200).body(f);
-            } else {
-                return ResponseEntity.status(401).body("Login Invalid");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Internal Server Error");
-        }
-    }
     @PostMapping("/addFaculty")
     public ResponseEntity<?> addFaculty(@RequestBody Faculty faculty) {
         try {

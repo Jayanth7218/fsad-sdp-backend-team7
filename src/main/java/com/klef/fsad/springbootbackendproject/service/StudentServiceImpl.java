@@ -33,7 +33,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student verifyStudentLogin(String email, String password) {
-        return studentRepository.findByEmailAndPassword(email, password);
+        return studentRepository.findByEmail(email);
     }
 
     @Override
