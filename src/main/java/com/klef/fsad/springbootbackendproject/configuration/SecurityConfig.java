@@ -48,14 +48,15 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/",
-                    "/auth/**",
-                    "/student/register",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/test/**"
-                ).permitAll()
+            		.requestMatchers(
+            			    "/",
+            			    "/auth/**",
+            			    "/student/register",
+            			    "/swagger-ui/**",
+            			    "/v3/api-docs/**",
+            			    "/test/**",
+            			    "/admin/test/**"   
+            			).permitAll()
 
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/faculty/**").hasAuthority("ROLE_FACULTY")
